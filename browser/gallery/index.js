@@ -4,6 +4,8 @@ const img = document.getElementById('currentPhoto');
 const pics = ["breuer-building.jpg", "guggenheim-museum.jpg", "headquarters.jpg", "IAC.jpg", "new-museum.jpg"];
 let picNum = 0;
 
+img.src = "i/" + pics[picNum];
+
 function showPics(picNum) {
   img.src = "i/" + pics[picNum];
 }
