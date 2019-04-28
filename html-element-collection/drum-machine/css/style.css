@@ -38,7 +38,7 @@ body {
 }
 
 
-.drum-kit__drum--active {
+.drum-kit__drum:active {
   background: #FFFFFF;
   color: #000000;
   transform: scale(1.1);
