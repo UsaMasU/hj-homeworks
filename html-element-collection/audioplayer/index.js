@@ -1,62 +1,55 @@
 ﻿'use strict';
 
-function btnClick(event) {
-  switch(event.target.className) {
+function btnClick() {
+  switch(this.className) {
     case 'playstate':
-    case 'fa fa-pause':
-    case 'fa fa-play': 
       if((music.currentTime > 0) && (!music.paused)) {
         music.pause();
-        statePause.style.display = 'none';
-        statePlay.style.display = 'block'
+        playerState.classList.remove('play');
         break;
       }  
       if(music.paused) {
         songTitle.title = musicNames[songIndex];
         music.play();
-        statePlay.style.display = 'none';
-        statePause.style.display = 'block'
+        playerState.classList.add('play');
       }   
       break;
     case 'stop':
-    case 'fa fa-stop':
       music.pause();
       music.currentTime = 0;
-      statePause.style.display = 'none';
-      statePlay.style.display = 'block'
+      playerState.classList.remove('play');
       break;
     case 'next':
-    case 'fa fa-forward':
       songIndex += 1; 
       if(songIndex > musicStore.length - 1) songIndex = 0;
       music.src = musicStore[songIndex];
       songTitle.title = musicNames[songIndex];
-      statePause.style.display = 'none';
-      statePlay.style.display = 'block'
+      if(playerState.classList.contains('play')) music.play();
       break;
     case 'back':
-    case 'fa fa-backward':
       songIndex -= 1; 
       if(songIndex < 0) songIndex = musicStore.length - 1;
       music.src = musicStore[songIndex];
       songTitle.title = musicNames[songIndex];
-      statePause.style.display = 'none';
-      statePlay.style.display = 'block'
-      break;  
+      if(playerState.classList.contains('play')) music.play();
+      break;
     default:
       break;
   }
 }
 
-let musicStore = ['mp3/LA Chill Tour.mp3', 'mp3/LA Fusion Jam.mp3', 'mp3/This is it band.mp3'];
-let musicNames = ['LA Chill Tour', 'LA Fusion Jam', 'This is it band'];
+const musicStore = ['mp3/LA Chill Tour.mp3', 'mp3/LA Fusion Jam.mp3', 'mp3/This is it band.mp3'];
+const musicNames = ['LA Chill Tour', 'LA Fusion Jam', 'This is it band'];
+const songTitle = document.getElementsByClassName('title')[0];
 let songIndex = 0;
 const music = document.getElementsByTagName('audio')[0];
 music.src = musicStore[songIndex];
 
-const statePlay = document.getElementsByClassName('fa fa-play')[0];
-const statePause = document.getElementsByClassName('fa fa-pause')[0];
-const songTitle = document.getElementsByClassName('title')[0];
+const playerState = document.getElementsByClassName('mediaplayer')[0];
 
-const buttons = document.getElementsByClassName('buttons')[0];
-buttons.onclick = btnClick;
+const buttonsPanel = document.getElementsByClassName('buttons')[0];
+const buttons = buttonsPanel.getElementsByTagName('button');
+
+Array.from(buttons).forEach(button => { 
+  button.onclick = btnClick; 
+});

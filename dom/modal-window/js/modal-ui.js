@@ -1,5 +1,5 @@
 function initModalUi() {
-  const triggers = document.querySelectorAll('.trigger');
+  const triggers = document.querySelectorAll('.trigger'); 
   for (let trigger of triggers) {
     trigger.addEventListener('click', (event) => {
       event.preventDefault();
