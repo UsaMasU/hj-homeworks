@@ -12,6 +12,7 @@ const weatherMap = {
 };
 
 function setData(data) {
+ 
   function getTemp(value) {
     const val = Number(value).toFixed(0);
     if (value > 0) {
@@ -46,7 +47,6 @@ function setData(data) {
     }
   }
   document.getElementById('days').innerHTML = daysHtml;
-
-  document.getElementsByClassName('spin')[0].classList.add('hidden');
+  document.getElementsByClassName('spin')[0].classList.add('hidden'); 
   document.getElementsByClassName('weather-body')[0].classList.remove('hidden');
 }
