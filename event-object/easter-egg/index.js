@@ -5,7 +5,6 @@ function checkCode(event) {
   if(keyIndex == code.length) secret.classList.add('visible');  
   
   if(event.ctrlKey && event.altKey && event.code == 'KeyT') {
-    console.log('ctrl+alt+t');
     panelNav.classList.contains('visible') ? panelNav.classList.remove('visible') : panelNav.classList.add('visible');
   }
 }
