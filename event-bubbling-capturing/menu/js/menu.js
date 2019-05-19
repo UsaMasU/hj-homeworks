@@ -10,8 +10,10 @@ function toggleMenu(event) {
   }
 }
 
-function openLink(event) {
+function openLink(event) { 
+  event.preventDefault();  
   console.log(this.textContent);
+  event.stopPropagation(); 
 }
 
 function init(node) {
@@ -32,3 +34,4 @@ Array
 Array
   .from(document.querySelectorAll('a'))
   .forEach(initLink);
+ 
