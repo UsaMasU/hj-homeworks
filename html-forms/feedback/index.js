@@ -1,18 +1,6 @@
 ﻿'use strict';
 
-const contactForm = {
-  lastname:'', 
-  name: '',
-  email: '',
-  company: '',
-  address: '',
-  zip: '',
-  city: '',
-  phone: '',
-  role: '',
-  subject: '',
-  message: ''  
-}
+const contactForm = {};
 
 function btnSendForm() {
   btnSend.disabled = true;
@@ -51,8 +39,9 @@ const btnSend = form.querySelector('.button-contact');
 btnSend.addEventListener("click", btnSendForm);
 
 const formFields = form.querySelectorAll('.form-group input');
-for(let field of formFields) contactForm[field.name] = field;
-contactForm['message'] = form.querySelector('.form-group textarea');
+for(let field of formFields) contactForm[field.name] = field
+contactForm[form.querySelector('.form-group textarea').name] = form.querySelector('.form-group textarea');
+
 contactForm['zip'].addEventListener("input", checkZip);
 
 const main = document.querySelector('main');
