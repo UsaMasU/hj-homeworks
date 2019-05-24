@@ -9,6 +9,7 @@ function showBubbles(target) {
 
   target.addEventListener('message', event => {
     const data = JSON.parse(event.data);
+
     if (data instanceof Array) {
       points = data;
     }
@@ -16,7 +17,7 @@ function showBubbles(target) {
 
   const canvas = document.querySelector("canvas");
   const c = canvas.getContext("2d");
-
+  
   canvas.height = window.innerHeight;
   canvas.width = window.innerWidth;
 
