@@ -1,7 +1,5 @@
 'use strict';
 
-const BRUSH_RADIUS = 6;
-
 let canvas = document.querySelector('#draw');
 let ctx = canvas.getContext("2d");
 canvas.setAttribute('width', window.innerWidth);
@@ -13,14 +11,14 @@ let hue = 0;
 let lineWidth = 0;
 let widthDir = 'up'
 
-  ctx.lineWidth = BRUSH_RADIUS;
-  ctx.lineJoin = 'round';
-  ctx.lineCap = 'round';
+ctx.lineWidth;
+ctx.lineJoin = 'round';
+ctx.lineCap = 'round';
 
 
-canvas.addEventListener("mousedown", function(e) {				
-		mouse.x = e.pageX - this.offsetLeft;
-		mouse.y = e.pageY - this.offsetTop;
+canvas.addEventListener("mousedown", function(event) {				
+		mouse.x = event.pageX - this.offsetLeft;
+		mouse.y = event.pageY - this.offsetTop;
 		draw = true;
 		ctx.beginPath();
           
@@ -28,43 +26,42 @@ canvas.addEventListener("mousedown", function(e) {
           
 });
 
-canvas.addEventListener("mousemove", function(e) {
+canvas.addEventListener("mousemove", function(event) {
 		if(draw==true) {	
 
-				mouse.x = e.pageX - this.offsetLeft;
-				mouse.y = e.pageY - this.offsetTop;
+				mouse.x = event.pageX - this.offsetLeft;
+				mouse.y = event.pageY - this.offsetTop;
     
 				ctx.lineTo(mouse.x, mouse.y);
 
     ctx.lineWidth = lineWidth;
     ctx.strokeStyle = 'hsl(' + hue +', 100%, 50%)';
 
-    
 			 ctx.stroke();
-      	 //ctx.closePath();
-   	//ctx.beginPath();
 		}
 });
 
-canvas.addEventListener("mouseup", function(e) {				
-  mouse.x = e.pageX - this.offsetLeft;
-  mouse.y = e.pageY - this.offsetTop;
+canvas.addEventListener("mouseup", function(event) {				
+  mouse.x = event.pageX - this.offsetLeft;
+  mouse.y = event.pageY - this.offsetTop;
 	 ctx.lineTo(mouse.x, mouse.y);
 		ctx.stroke();
 		ctx.closePath();
 		draw = false;
 });
 
+canvas.addEventListener("mouseover", function(event) {
+	 draw=false;	
+});
 
-window.addEventListener('resize', event => {
-  console.log('resize');
+canvas.addEventListener("dblclick", function(event) {	
   canvasClear();
 });
 
-canvas.addEventListener("dblclick", function(e) {	
-  console.log('dblclick');
+window.addEventListener('resize', function(event) {
   canvasClear();
 });
+
 
 function canvasClear() {
   canvas.width = window.innerWidth;
@@ -74,10 +71,6 @@ function canvasClear() {
 }
 
 function tick () {
-  //if(needsRepaint) {
-  //  repaint();
-  //  needsRepaint = false;
-  //}
   hue += 1;
   if(hue == 359 ) hue = 0;
  
@@ -93,8 +86,7 @@ function tick () {
     default:
       break;
   }
-
-  
+ 
   ctx.beginPath();
   window.requestAnimationFrame(tick);
 }
