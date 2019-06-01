@@ -10,6 +10,7 @@ let draw = false;
 let hue = 0;
 let lineWidth = 0;
 let widthDir = 'up'
+let shiftPressed;
 
 ctx.lineWidth;
 ctx.lineJoin = 'round';
@@ -50,6 +51,11 @@ canvas.addEventListener("mouseup", function(event) {
 		draw = false;
 });
 
+
+canvas.addEventListener("mousemove", function(event) {
+	 shiftPressed = event.shiftKey;	
+});
+
 canvas.addEventListener("mouseover", function(event) {
 	 draw=false;	
 });
@@ -71,9 +77,14 @@ function canvasClear() {
 }
 
 function tick () {
-  hue += 1;
-  if(hue == 359 ) hue = 0;
- 
+  if(shiftPressed) {
+    hue -= 1;
+    if(hue < 0) hue = 359;
+  }
+  else {
+    hue += 1;
+      if(hue > 359 ) hue = 0;
+  }
   switch(widthDir) {
     case 'up':
       lineWidth += 1;
