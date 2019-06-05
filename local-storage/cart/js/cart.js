@@ -1,40 +1,31 @@
 'use strict';
 
-function loadColors() {
-  if (requestColors.status === 200) {
-    const responseColors = JSON.parse(requestColors.responseText);
-    
-    if(localStorage.length == 0) localStorage.setItem('color', '');
-    
-    for(let itemColor in responseColors) colorSwatch.innerHTML += colorSnippet(responseColors[itemColor], localStorage.getItem('color'));
-    
-    let colorsForChoice = cartForm.querySelector('#colorSwatch');
-    colorsForChoice.addEventListener('click', (event) => {
-      if(event.target.tagName == 'INPUT') localStorage.setItem('color', event.target.value);
-    });
-  }
+const colorURL = 'https://neto-api.herokuapp.com/cart/colors';
+const sizeURL = 'https://neto-api.herokuapp.com/cart/sizes';
+const busketURL = 'https://neto-api.herokuapp.com/cart';
+
+function fillSwatch(response, swatchForm, snippet, itemMem, eventFunc) {
+  localStorage.getItem(itemMem) == null ? localStorage.setItem(itemMem, '') : localStorage.getItem(itemMem);
+  for(let item in response) swatchForm.innerHTML += snippet(response[item], localStorage.getItem(itemMem));
+  eventFunc.addEventListener('click', (event) => {if(event.target.tagName == 'INPUT') localStorage.setItem(itemMem, event.target.value)});         
 }
 
-function loadSizes() {
-  if (requestSizes.status === 200) {
-    const responseSizes = JSON.parse(requestSizes.responseText);
-    
-    if(localStorage.length == 0) localStorage.setItem('size', '');
-    
-    for(let itemSize in responseSizes) sizeSwatch.innerHTML += sizeSnippet(responseSizes[itemSize], localStorage.getItem('size'));
-    
-    let sizesForChoice = cartForm.querySelector('#sizeSwatch');
-    sizesForChoice.addEventListener('click', (event) => {
-      if(event.target.tagName == 'INPUT') localStorage.setItem('size', event.target.value);
-    });  
-  }
-}
-
-function loadBasket() {
-  if (requestBasket.status === 200) {
-    const responseBasket = JSON.parse(requestBasket.responseText);
-    basketItems(responseBasket);
-  }
+function responseJSON(event) {
+  if(event.target.status === 200) {
+    const response = JSON.parse(event.target.responseText);
+    switch(event.target.responseURL) {
+      case colorURL:
+        fillSwatch(response, colorSwatch, colorSnippet, 'color', colorsForChoice);
+        break;
+      case sizeURL:
+        fillSwatch(response, sizeSwatch, sizeSnippet, 'size', sizesForChoice);  
+        break;
+      case busketURL:
+        basketItems(response);
+        break;
+      default:
+    }
+  } 
 }
 
 function basketItems(itemsInBasket) {
@@ -56,7 +47,7 @@ function basketItems(itemsInBasket) {
        formData.append('productId', event.target.getAttribute('data-id')); 
        const xhr = new XMLHttpRequest(); 
        xhr.addEventListener("load", responsePostCart);
-       xhr.open('POST', 'https://neto-api.herokuapp.com/cart/remove'); 
+       xhr.open('POST', `${busketURL}/remove`); 
        xhr.send(formData);   
      });
    }  
@@ -68,7 +59,7 @@ function addItemToBasket() {
   formData.append('productId', cartForm.getAttribute('data-product-id'));  
   const xhr = new XMLHttpRequest(); 
   xhr.addEventListener("load", responsePostCart);
-  xhr.open('POST', 'https://neto-api.herokuapp.com/cart'); 
+  xhr.open('POST', busketURL); 
   xhr.send(formData);
 }
 
@@ -78,18 +69,18 @@ function responsePostCart(event) {
 }
 
 const requestColors = new XMLHttpRequest();
-requestColors.addEventListener("load", loadColors);
-requestColors.open('GET', 'https://neto-api.herokuapp.com/cart/colors');
+requestColors.addEventListener("load", responseJSON);//loadColors);
+requestColors.open('GET', colorURL);
 requestColors.send();
 
 const requestSizes = new XMLHttpRequest();
-requestSizes.addEventListener("load", loadSizes);
-requestSizes.open('GET', 'https://neto-api.herokuapp.com/cart/sizes');
+requestSizes.addEventListener("load", responseJSON);//loadSizes);
+requestSizes.open('GET', sizeURL);
 requestSizes.send();
 
 const requestBasket = new XMLHttpRequest();
-requestBasket.addEventListener("load", loadBasket);
-requestBasket.open('GET', 'https://neto-api.herokuapp.com/cart');
+requestBasket.addEventListener("load", responseJSON);//loadBasket);
+requestBasket.open('GET', busketURL);
 requestBasket.send();
 
 
@@ -137,7 +128,9 @@ function basketSnippet(commonPrice) {
 
 const cartForm = document.querySelector('#AddToCartForm');
 const sizeSwatch = cartForm.querySelector('.swatches #sizeSwatch');
+const sizesForChoice = cartForm.querySelector('#sizeSwatch');
 const colorSwatch = cartForm.querySelector('.swatches #colorSwatch');
+const colorsForChoice = cartForm.querySelector('#colorSwatch');
 const quickCart = document.querySelector('#quick-cart');
 
 const itemToBasket = document.querySelector('#AddToCart');

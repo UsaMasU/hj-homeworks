@@ -1,29 +1,31 @@
 'use strict';
 
 function signIn(event) {
-  event.preventDefault();  
+  event.preventDefault();
+  let jsonData = {};  
   const formFields = signInForm.querySelectorAll('input')
   for(let field of formFields) { 
     if(field.getAttribute('name')) jsonData[field.name] = field.value;
   }
-  post(signInURL);
+  post(signInURL, jsonData);
 }
 
 function signUp(event) {
-  event.preventDefault();  
+  event.preventDefault();
+  let jsonData = {};  
   const formFields = signUpForm.querySelectorAll('input')
   for(let field of formFields) { 
     if(field.getAttribute('name')) jsonData[field.name] = field.value;
   }
-  post(signUpURL);
+  post(signUpURL, jsonData);
 }
 
-function post(url) {
+function post(url, data) {
   const xhr = new XMLHttpRequest(); 
   xhr.addEventListener("load", response);
   xhr.open('POST', url); 
   xhr.setRequestHeader('Content-Type', 'application/json'); 
-  xhr.send(JSON.stringify(jsonData));
+  xhr.send(JSON.stringify(data));
 }
 
 function response(event) {
@@ -45,7 +47,6 @@ function response(event) {
   } 
 }
 
-let jsonData = {}
 const signInURL ='https://neto-api.herokuapp.com/signin';
 const signUpURL ='https://neto-api.herokuapp.com/signup';
  
