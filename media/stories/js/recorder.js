@@ -35,7 +35,8 @@ function createThumbnail(video) {
     });
   });
 }
-
+ 
+ 
 function record(app) {
   return new Promise((done, fail) => {
     app.mode = 'preparing';
