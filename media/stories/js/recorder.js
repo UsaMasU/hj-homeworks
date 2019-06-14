@@ -35,13 +35,59 @@ function createThumbnail(video) {
     });
   });
 }
- 
- 
+
+
 function record(app) {
   return new Promise((done, fail) => {
+    console.log('Switch on');
     app.mode = 'preparing';
-    setTimeout(() => {
-      fail('Не удалось записать видео');
-    }, app.limit);
-  });
+    let recorder; 
+    let recorded;
+    let chunks = []; 
+    let frame;
+    let rec;
+    navigator.mediaDevices.getUserMedia({ audio: false, video: true })
+      .then(function(stream) {
+        console.log('Camera is active');                    
+     
+        recorder = new MediaRecorder(stream);                            
+        recorder.addEventListener('dataavailable', (e) => {
+          chunks.push(e.data);
+        });
+      
+        app.preview.onloadedmetadata = function(e) {
+          app.preview.play();
+          setTimeout(() => {
+            console.log('Start record');
+            app.mode = 'recording';
+            recorder.start();
+          }, 1000);
+
+          setTimeout(() => {
+            app.preview.srcObject = null;
+            stream.getTracks().forEach(track => track.stop())
+            recorder.stop();  
+          }, app.limit);
+        }; 
+      
+        recorder.addEventListener('stop', (e) => {  
+          console.log('stop record');
+          stream.getTracks().forEach(track => track.stop());                        
+          recorded = new Blob(chunks, { 'type' : recorder.mimeType });
+          chunks = null; 
+          recorder = stream = null; 
+          console.log('video:', recorded);
+        
+          createThumbnail(recorded)
+           .then(pic => {
+            console.log('Take a photo');
+            console.log('photo:', pic);
+            done({'frame': pic, 'video': recorded});
+          })
+        });      
+        app.preview.srcObject = stream;
+      })
+  })
 }
+
+

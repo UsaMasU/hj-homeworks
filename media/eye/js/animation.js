@@ -1,44 +1,32 @@
 'use strict';
 
 const eye = document.querySelector('.big-book__eye');
-const pupil = eye.querySelector('.big-book__pupil');
+const pupil = document.querySelector('.big-book__pupil');
 
-const pupilRadius = pupil.clientWidth / 2;
+window.addEventListener('mousemove', animatePupil);
 
-document.addEventListener('mousemove', event => {
-  const mouseCursorX = event.pageX;
-  const mouseCursorY = event.pageY;
-  
-  const pupilLocation = pupil.getBoundingClientRect();
-  const pupilCenterX = pupilLocation.x + pupilRadius;
-  const pupilCenterY = pupilLocation.y + pupilRadius;
-  
-  const posX = mouseCursorX - pupilCenterX + document.body.scrollLeft;
-  const posY = mouseCursorY - pupilCenterY + document.body.scrollTop;
-  
-  let eyeX = posX;
-  let eyeY = posY;
-  
-  if(posX * posX + posY * posY > pupilRadius * pupilRadius) {
-    if(posX !== 0) {
-      let coef = posY / posX;
-      eyeX = Math.sqrt(pupilRadius * pupilRadius / (coef * coef + 1));
-      eyeX = (posX > 0) ? eyeX : -eyeX;
-      eyeY = Math.abs(coef * eyeX);
-      eyeY = (posY > 0) ? eyeY : -eyeY;
-    } 
-    else {
-      eyeY = posY > 0 ? pupilRadius : -pupilRadius;
-    }
-  }
-  
-  let pupilSizeX = Math.abs((mouseCursorX - pupilCenterX)) ;
-  let pupilSizeY = Math.abs((mouseCursorY - pupilCenterY)) ;
-  let size = (((pupilSizeX + pupilSizeY) / 100) - 3) / (1 - 3) * 3;
-  if(size < 1.0) size = 1.0;
-  if(size > 3.0) size = 3.0;
-  
-  pupil.style.setProperty('--pupil-x', eyeX + 'px');
-  pupil.style.setProperty('--pupil-y', eyeY + 'px');
-  pupil.style.setProperty('--pupil-size', size);
-});
+function animatePupil(event) {
+  const eyeCoords = eye.getBoundingClientRect();
+
+  const startX = eyeCoords.left + eyeCoords.width / 2;
+  const startY = eyeCoords.top + eyeCoords.height / 2;
+  const mouseX = event.clientX;
+  const mouseY = event.clientY;
+
+  const leftDistance = startX;
+  const rightDistance = document.documentElement.clientWidth - startX;
+  const topDistance = startY;
+  const bottomDistance = document.documentElement.clientHeight - startY;
+
+  const traveledDistanceX = mouseX - startX;
+  const traveledDistanceY = mouseY - startY;
+
+  const pupilX = mouseX < startX ? 30 * traveledDistanceX / leftDistance : 30 * traveledDistanceX / rightDistance;
+  const pupilY = mouseY < startY ? 30 * traveledDistanceY / topDistance : 30 * traveledDistanceY / bottomDistance;
+  pupil.style.setProperty('--pupil-x', `${pupilX}px`);
+  pupil.style.setProperty('--pupil-y', `${pupilY}px`);
+
+  const progress = Math.max(Math.abs(pupilX), Math.abs(pupilY)) / 30;
+  const pupilSize = 3 - (3 - 1) * progress;
+  pupil.style.setProperty('--pupil-size', pupilSize);
+}
