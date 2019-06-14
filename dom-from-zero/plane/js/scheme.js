@@ -44,6 +44,12 @@ function showPlane(plane) {
   planeSeatScheme = plane.scheme;
   planeSeatLetters4 = plane.letters4;
   planeSeatLetters6 = plane.letters6;
+  counterPax = 0;
+  totalPax.textContent = 0;
+  counterAdult = 0; 
+  totalAdult.textContent = 0;
+  counterHalf = 0;
+  totalHalf.textContent = 0;
   seatMapTitle.textContent = `${plane.title} (${plane.passengers} пасажиров)`;
   seatMapDivText.textContent = '';
   if(seatMapDiv.querySelectorAll('.row').length > 0) for(let rowChild of seatMapDiv.querySelectorAll('.row')) seatMapDiv.removeChild(rowChild);
@@ -212,4 +218,4 @@ function changePlane() {
     .then(showPlane);
 }
 
-
+window.onload = () => changePlane.bind(planeType)();

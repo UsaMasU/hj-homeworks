@@ -1,18 +1,25 @@
 'use strict';
 
-function createElement(content) {
-  const element = document.createElement(content.name);
-  if(content.props != null) {
-    if(typeof content.props === 'object') {    
-      for(let atr in content.props) {
-        element.setAttribute(atr, content.props[atr]);
-      }
-    }
+function createElement(node) {
+  if (typeof node === 'string') {
+    return document.createTextNode(node);
   }
-  if(typeof content.childs[0] === 'string') {
-     element.textContent = content.childs[0];
-  }else if(content.childs instanceof Array) {
-     content.childs.forEach(child => element.appendChild(createElement(child)));
+
+  const element = document.createElement(node.name);
+
+  if (typeof node.props === 'object' && node.props !== null) {
+    Object.keys(node.props).forEach(i => {
+      element.setAttribute(i, node.props[i]);
+      if(node.props[i] == 'main-content') {
+        element.style.border = 'dashed red';
+      }
+    });
+  }
+
+  if (node.childs instanceof Array) {
+    node.childs.forEach(child => {
+      element.appendChild(createElement(child));
+    });
   }
   return element;
 }
